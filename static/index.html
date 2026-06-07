@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LastBite – Survival Tool</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<header>
+  <div class="logo-row">
+    <span class="logo-icon">🥗</span>
+    <h1>LastBite</h1>
+  </div>
+  <p class="tagline">Know what you have. Waste nothing.</p>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="scan">📸 Scan</button>
+  <button class="tab-btn" data-tab="pantry">🧺 Pantry</button>
+  <button class="tab-btn" data-tab="survival">⏱ Survival</button>
+  <button class="tab-btn" data-tab="recipes">🍳 Recipes</button>
+</nav>
+
+<main>
+
+  <!-- ── SCAN ────────────────────────────────────────────── -->
+  <section id="tab-scan" class="tab active">
+
+    <div class="upload-card" id="uploadCard">
+      <input type="file" id="fileInput" accept="image/*" capture="environment" hidden />
+
+      <div id="uploadPlaceholder" class="upload-placeholder">
+        <span style="font-size:56px">📷</span>
+        <p>Take a photo or upload an image of your fridge / pantry</p>
+        <button class="btn primary" onclick="document.getElementById('fileInput').click()">
+          Choose Image
+        </button>
+      </div>
+
+      <div id="imagePreview" class="image-preview" hidden>
+        <img id="previewImg" src="" alt="preview" />
+        <div class="preview-actions">
+          <button class="btn primary" onclick="scanImage()">🔍 Scan Food Items</button>
+          <button class="btn secondary" onclick="clearImage()">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="scanLoading" class="loading" hidden>
+      <div class="spinner"></div>
+      <p>Analysing your food items…</p>
+    </div>
+
+    <div id="scanResults" class="card" hidden>
+      <h2>Detected Items</h2>
+      <div id="detectedGrid" class="detected-grid"></div>
+      <div class="row gap">
+        <button class="btn success" id="addAllBtn" onclick="addAllToPantry()">✓ Add All to Pantry</button>
+        <button class="btn secondary" onclick="clearScan()">Scan Again</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── PANTRY ───────────────────────────────────────────── -->
+  <section id="tab-pantry" class="tab" hidden>
+
+    <div class="row between mb">
+      <h2>My Pantry</h2>
+      <div class="row gap">
+        <button class="btn outline" onclick="toggleAddForm()">+ Add Item</button>
+        <button class="btn danger" onclick="fetch('/api/pantry',{method:'DELETE'}).then(()=>{document.getElementById('pantryList').innerHTML='<div class=\'empty-state\'><p>Pantry cleared.</p></div>';})">🗑 Clear All</button>
+      </div>
+    </div>
+
+    <div id="addForm" class="add-form card" hidden>
+      <input id="fName" type="text" placeholder="Food name" class="input" />
+      <input id="fQty"  type="text" placeholder="Quantity" value="1" class="input" style="max-width:90px" />
+      <select id="fCat" class="input">
+        <option value="other">Other</option>
+        <option value="protein">Protein</option>
+        <option value="dairy">Dairy</option>
+        <option value="vegetable">Vegetable</option>
+        <option value="fruit">Fruit</option>
+        <option value="grain">Grain</option>
+        <option value="condiment">Condiment</option>
+      </select>
+      <button class="btn primary" onclick="addManual()">Add</button>
+    </div>
+
+    <div id="pantryList" class="pantry-list"></div>
+
+  </section>
+
+  <!-- ── SURVIVAL ──────────────────────────────────────────── -->
+  <section id="tab-survival" class="tab" hidden>
+
+    <div class="runway-hero">
+      <div class="runway-num" id="runwayDays">--</div>
+      <div class="runway-lbl">days of meals estimated</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-val" id="statMeals">--</div>
+        <div class="stat-lbl">total meals</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statItems">--</div>
+        <div class="stat-lbl">items in pantry</div>
+      </div>
+    </div>
+
+    <div id="criticalBox" class="critical-box" hidden>
+      <h3>⚠️ Use These Soon</h3>
+      <div id="criticalList"></div>
+    </div>
+
+    <div class="card">
+      <h3 class="section-title">Ingredient Breakdown</h3>
+      <div id="breakdownList" class="breakdown-list"></div>
+    </div>
+
+  </section>
+
+  <!-- ── RECIPES ───────────────────────────────────────────── -->
+  <section id="tab-recipes" class="tab" hidden>
+
+    <div class="row between mb">
+      <h2>Recipe Suggestions</h2>
+      <button class="btn primary" onclick="loadRecipes()">🔄 Refresh</button>
+    </div>
+
+    <div id="recipesLoading" class="loading" hidden>
+      <div class="spinner"></div>
+      <p>Finding recipes for your ingredients…</p>
+    </div>
+
+    <div id="recipesList"></div>
+
+  </section>
+
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

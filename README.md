@@ -137,9 +137,3 @@ client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 A `.env.example` file is included so anyone running the project knows what to create — without exposing the actual key.
 
 ---
-
-## Notes
-
-- Each scan costs approximately $0.01–$0.02 using GPT-4o Vision
-- The database `lastbite.db` is created automatically on first run
-- Do not commit `.env` or `lastbite.db` to version control
